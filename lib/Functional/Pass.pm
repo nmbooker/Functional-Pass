@@ -3,10 +3,13 @@ package Functional::Pass;
 use 5.006;
 use strict;
 use warnings;
+use Exporter qw(import);
+
+our @EXPORT_OK = qw(pass_undef pass_false);
 
 =head1 NAME
 
-Functional::Pass - The great new Functional::Pass!
+Functional::Pass - Bypass calls on incompatible values.
 
 =head1 VERSION
 
@@ -19,34 +22,42 @@ our $VERSION = '0.01';
 
 =head1 SYNOPSIS
 
-Quick summary of what the module does.
+Call a function on compatible values, but pass through incompatible
+values unchanged.
 
 Perhaps a little code snippet.
 
-    use Functional::Pass;
+    use Functional::Pass qw(pass_undef);
 
-    my $foo = Functional::Pass->new();
-    ...
+    my $value_1 = pass_undef { uc $_ } 'abc';
+    # $value_1 will be 'ABC'
+    my $value_2 = pass_undef { uc $_ } undef;
+    # $ value_2 will be undef
 
 =head1 EXPORT
 
-A list of functions that can be exported.  You can delete this section
-if you don't export anything, such as for a purely object-oriented module.
+pass_undef
 
-=head1 SUBROUTINES/METHODS
+=head1 FUNCTIONS
 
-=head2 function1
+=head2 pass_undef
 
 =cut
 
-sub function1 {
+sub pass_undef(&$) {
+    my ($function, $value) = @_;
+    local $_ = $value;
+    return defined($value) ? $function->($value) : $value;
 }
 
-=head2 function2
+=head2 pass_false
 
 =cut
 
-sub function2 {
+sub pass_false(&$) {
+    my ($function, $value) = @_;
+    local $_ = $value;
+    return $value ? $function->($value) : $value;
 }
 
 =head1 AUTHOR
@@ -55,45 +66,13 @@ Nick Booker, C<< <NMBooker at gmail.com> >>
 
 =head1 BUGS
 
-Please report any bugs or feature requests to C<bug-functional-pass at rt.cpan.org>, or through
-the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Functional-Pass>.  I will be notified, and then you'll
-automatically be notified of progress on your bug as I make changes.
-
-
-
+Please report any bugs or feature requests on L<http://github.com/nmbooker/Functional-Pass/issues>.
 
 =head1 SUPPORT
 
 You can find documentation for this module with the perldoc command.
 
     perldoc Functional::Pass
-
-
-You can also look for information at:
-
-=over 4
-
-=item * RT: CPAN's request tracker (report bugs here)
-
-L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=Functional-Pass>
-
-=item * AnnoCPAN: Annotated CPAN documentation
-
-L<http://annocpan.org/dist/Functional-Pass>
-
-=item * CPAN Ratings
-
-L<http://cpanratings.perl.org/d/Functional-Pass>
-
-=item * Search CPAN
-
-L<http://search.cpan.org/dist/Functional-Pass/>
-
-=back
-
-
-=head1 ACKNOWLEDGEMENTS
-
 
 =head1 LICENSE AND COPYRIGHT
 
