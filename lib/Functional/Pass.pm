@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use Exporter qw(import);
 
-our @EXPORT_OK = qw(pass_undef pass_false);
+our @EXPORT_OK = qw(pass_undef pass_false pundef);
 
 =head1 NAME
 
@@ -48,6 +48,17 @@ sub pass_undef(&$) {
     my ($function, $value) = @_;
     local $_ = $value;
     return defined($value) ? $function->($value) : $value;
+}
+
+=head2 pundef
+
+An alias for C<pass_undef>
+
+=cut
+
+sub pundef(&$) {
+    my ($f, $v) = @_;
+    return pass_undef(\&$f, $v);
 }
 
 =head2 pass_false
