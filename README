@@ -17,6 +17,8 @@ otherwise it will be set to $my_hashref->{akey}.
 
 You could chain calls together (note pundef is an alias for pass_undef):
 
+ use Functional::Pass qw(pundef);
+
  my $v = pundef { $_->{nested_key} } pundef { $_->{akey} } $hashref;
 
 That way, if $hashref is undef, or $hashref->{akey}
